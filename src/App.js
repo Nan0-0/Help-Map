@@ -5,7 +5,7 @@ const App = () => {
         <div>
             <h1>lul hey.</h1>
         </div>
-    )
+    );
 }
 
 export default App;
