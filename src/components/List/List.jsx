@@ -1,32 +1,34 @@
+import React, { useState, useEffect, createRef } from 'react';
+import { CircularProgress, Grid, Typography } from '@material-ui/core';
 
-import React from 'react';
-import { Box } from '@material-ui/core';
+import PlaceDetails from '../PlaceDetails/PlaceDetails';
+import useStyles from './styles.js';
 
+const List = ({ places, childClicked, isLoading }) => {
+  const [elRefs, setElRefs] = useState([]);
+  const classes = useStyles();
 
-const listStyles = {
-  container: {
-    direction: "column",
-    bg: "whiteAlpha.900",
-    width: "37vw",
-    height: "100vh",
-    position: "absolute",
-    left: 0,
-    top: 0,
-    zIndex: 1,
-    overflow: "hidden",
-    px: 2,
-  },
-};
-
-const List = ({ items, isLoading, renderItem }) => {
-
+  useEffect(() => {
+    setElRefs((refs) => Array(places.length).fill().map((_, i) => refs[i] || createRef()));
+  }, [places]);
 
   return (
-    <Box {...listStyles.container}>
-      <Box flex={1} overflowY={"scroll"} mt={16} display="flex" flexDirection="column">
-        {items && items.map((item, i) => renderItem(item, i))}
-      </Box>
-    </Box>
+    <div className={classes.container}>
+      <Typography variant="h4">Healthcare Centers</Typography>
+      {isLoading ? (
+        <div className={classes.loading}>
+          <CircularProgress size="5rem" />
+        </div>
+      ) : (
+        <Grid container spacing={1} className={classes.list}>
+          {places?.map((place, i) => (
+            <Grid ref={elRefs[i]} key={i} item xs={12}>
+              <PlaceDetails selected={Number(childClicked) === i} refProp={elRefs[i]} place={place} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </div>
   );
 };
 
